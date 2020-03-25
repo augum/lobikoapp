@@ -1,3 +1,4 @@
 import Server from "./server";
-let server = new Server(780);
+var PORT= process.env.PORT || 780;
+let server = new Server(PORT);
 server.start();
