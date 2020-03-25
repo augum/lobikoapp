@@ -4,6 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server"));
-var PORT = process.env.PORT || 780;
+var PORT = process.env.PORT || 5000;
 let server = new server_1.default(PORT);
 server.start();
