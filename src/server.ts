@@ -18,8 +18,8 @@ export default class Server{
      const app = express();
      app.use(bodyParser.json());
      app.use(cors());
-     //const uri ="mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
-     const uri ="mongodb://localhost:27017/LOBIKO";
+     const uri ="mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
+     //const uri ="mongodb://localhost:27017/LOBIKO";
      mongoose.connect(uri,(err)=>{
          if(err) console.log(err);
          else console.log("connecté mongodb makuma");
