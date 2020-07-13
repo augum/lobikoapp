@@ -23,8 +23,8 @@ class Server {
         const app = express_1.default();
         app.use(body_parser_1.default.json());
         app.use(cors_1.default());
-        //const uri ="mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
-        const uri = "mongodb://localhost:27017/LOBIKO";
+        const uri = "mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
+        //const uri ="mongodb://localhost:27017/LOBIKO";
         mongoose_1.default.connect(uri, (err) => {
             if (err)
                 console.log(err);
