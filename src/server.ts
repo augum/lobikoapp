@@ -1,7 +1,6 @@
 import express,{Request,Response} from "express";
 import mongoose from "mongoose";
 import Hopital from "./models/hopital.model";
-import Centre from "./models/centre.model";
 import Info from "./models/info.model";
 import Medecin from "./models/medecin.model";
 import Pharmacie from "./models/pharmacie.model";
@@ -10,6 +9,7 @@ import cors from "cors";
 import Banque from "./models/banque.model";
 import Ambulance from "./models/ambulance.model";
 import Like from "./models/like.model";
+import Infirmier from "./models/infirmier.model";
 
 export default class Server{
  constructor(private port:number){}
@@ -18,8 +18,8 @@ export default class Server{
      const app = express();
      app.use(bodyParser.json());
      app.use(cors());
-     const uri ="mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
-     //const uri ="mongodb://localhost:27017/LOBIKO";
+     //const uri ="mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
+     const uri ="mongodb://localhost:27017/LOBIKO";
      mongoose.connect(uri,(err)=>{
          if(err) console.log(err);
          else console.log("connecté mongodb makuma");
@@ -133,29 +133,22 @@ app.post("/likes",(req:Request,resp:Response)=>{
          });
     });
 
-    app.post("/centre",(req:Request,resp:Response)=>{
-        let centre = new Centre(req.body);
-        centre.save(err=>{
+    app.post("/infirmiers",(req:Request,resp:Response)=>{
+        let infirmier = new Infirmier(req.body);
+        infirmier.save(err=>{
             if(err) resp.status(500).send(err);
-            else resp.send(centre);
+            else resp.send(infirmier);
         });
    });
-   app.get("/centrep",(req:Request,resp:Response)=>{
-    let kw:string=req.query.kw;
-    Centre.find({localite:{$regex:kw}},
-        (err, centres)=>{
-        if(err) resp.status(500).send(err);
-        else resp.send(centres);
-    });
- });
- app.get("/centre",(req:Request,resp:Response)=>{
+
+   app.get("/infirmiers",(req:Request,resp:Response)=>{
     let kw:string=req.query.kw || "";
-    Centre.find({ville:{$regex:".*(?i)"+kw+".*"}},
-        (err, centres)=>{
-        if(err) resp.status(500).send(err);
-        else resp.send(centres);
-    });
- });
+   Infirmier.find({grade:{$regex:".*(?i)"+kw+".*"}},
+       (err, infirmiers)=>{
+       if(err) resp.status(500).send(err);
+       else resp.send(infirmiers);
+   });
+});
 
  app.post("/info",(req:Request,resp:Response)=>{
     let info = new Info(req.body);
@@ -203,6 +196,12 @@ app.get("/info",(req:Request,resp:Response)=>{
     Medecin.findByIdAndUpdate(req.params.id,req.body,(err,medecin)=>{
         if(err) resp.status(500).send(err);
         else resp.send("Medecin desormain visible");
+    });  
+});
+app.put("/infirmiers/:id",(req:Request,resp:Response)=>{
+    Infirmier.findByIdAndUpdate(req.params.id,req.body,(err,infirmier)=>{
+        if(err) resp.status(500).send(err);
+        else resp.send("Infirmier desormain visible");
     });  
 });
      app.listen(this.port,()=>{

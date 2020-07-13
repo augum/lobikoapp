@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const hopital_model_1 = __importDefault(require("./models/hopital.model"));
-const centre_model_1 = __importDefault(require("./models/centre.model"));
 const info_model_1 = __importDefault(require("./models/info.model"));
 const medecin_model_1 = __importDefault(require("./models/medecin.model"));
 const pharmacie_model_1 = __importDefault(require("./models/pharmacie.model"));
@@ -15,6 +14,7 @@ const cors_1 = __importDefault(require("cors"));
 const banque_model_1 = __importDefault(require("./models/banque.model"));
 const ambulance_model_1 = __importDefault(require("./models/ambulance.model"));
 const like_model_1 = __importDefault(require("./models/like.model"));
+const infirmier_model_1 = __importDefault(require("./models/infirmier.model"));
 class Server {
     constructor(port) {
         this.port = port;
@@ -23,8 +23,8 @@ class Server {
         const app = express_1.default();
         app.use(body_parser_1.default.json());
         app.use(cors_1.default());
-        const uri = "mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
-        //const uri ="mongodb://localhost:27017/LOBIKO";
+        //const uri ="mongodb+srv://maku:fiston1984@cluster0-dcmzv.mongodb.net/test?retryWrites=true&w=majority";
+        const uri = "mongodb://localhost:27017/LOBIKO";
         mongoose_1.default.connect(uri, (err) => {
             if (err)
                 console.log(err);
@@ -155,31 +155,22 @@ class Server {
                     resp.send(hopital);
             });
         });
-        app.post("/centre", (req, resp) => {
-            let centre = new centre_model_1.default(req.body);
-            centre.save(err => {
+        app.post("/infirmiers", (req, resp) => {
+            let infirmier = new infirmier_model_1.default(req.body);
+            infirmier.save(err => {
                 if (err)
                     resp.status(500).send(err);
                 else
-                    resp.send(centre);
+                    resp.send(infirmier);
             });
         });
-        app.get("/centrep", (req, resp) => {
-            let kw = req.query.kw;
-            centre_model_1.default.find({ localite: { $regex: kw } }, (err, centres) => {
-                if (err)
-                    resp.status(500).send(err);
-                else
-                    resp.send(centres);
-            });
-        });
-        app.get("/centre", (req, resp) => {
+        app.get("/infirmiers", (req, resp) => {
             let kw = req.query.kw || "";
-            centre_model_1.default.find({ ville: { $regex: ".*(?i)" + kw + ".*" } }, (err, centres) => {
+            infirmier_model_1.default.find({ grade: { $regex: ".*(?i)" + kw + ".*" } }, (err, infirmiers) => {
                 if (err)
                     resp.status(500).send(err);
                 else
-                    resp.send(centres);
+                    resp.send(infirmiers);
             });
         });
         app.post("/info", (req, resp) => {
@@ -242,6 +233,14 @@ class Server {
                     resp.status(500).send(err);
                 else
                     resp.send("Medecin desormain visible");
+            });
+        });
+        app.put("/infirmiers/:id", (req, resp) => {
+            infirmier_model_1.default.findByIdAndUpdate(req.params.id, req.body, (err, infirmier) => {
+                if (err)
+                    resp.status(500).send(err);
+                else
+                    resp.send("Infirmier desormain visible");
             });
         });
         app.listen(this.port, () => {
